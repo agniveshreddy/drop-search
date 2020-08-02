@@ -3,13 +3,15 @@
 This is a sample project to showcase a Smart Search Dropdown
 
 ## Run
-To Run the Application follow below steps in Command Prompt:
+To Run the Application follow below steps in Command Prompt:<br/>
+Note: Before running the application please make sure that node is running in your machine.
 ```
 $ git clone https://github.com/agniveshreddy/drop-search.git
 $ npm install
 $ npm run dev:watch
 ```
 
+ 
 ## Libraries Used
 This project uses other libraries internally to run this application.<br />
 -> Webpack and it's internal dev server to build and run the project.<br />
