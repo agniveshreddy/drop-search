@@ -1,8 +1,10 @@
 import { types } from './index';
 
-export const addCountryAction = (value) => {
+export const addCountryAction = (value, resolve, reject) => {
     return {
         type: types.ADD_COUNTRY,
-        value
+        value,
+        resolve,
+        reject
     }
 };

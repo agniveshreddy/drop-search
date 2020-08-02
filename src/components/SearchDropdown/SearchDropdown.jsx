@@ -15,7 +15,8 @@ class SearchDropdown extends PureComponent {
         filteredCountries:[], 
         selectedValue:'',
         show:false, 
-        showMore:false};
+        showMore:false,
+        addCountryStatus:''};
 
       this.onMenuClick = this.onMenuClick.bind(this);
       this.onDropdownClick = this.onDropdownClick.bind(this);
@@ -26,13 +27,18 @@ class SearchDropdown extends PureComponent {
 
     onMenuClick(e){
         if(e.target.nodeName === "INPUT" || 
-            e.target.className.search("dropdown--more")> -1){
+            e.target.className.search("dropdown--more")> -1
+            ){
                 
+        }
+        else if(e.target.nodeName === "BUTTON"){
+            this.setState({show:false, addCountryStatus:''});
         }
         else{
             this.setState({
                 selectedValue:e.target.innerText,
                 show:false,
+                addCountryStatus: '',
                 searchText: ''});
         }
             
@@ -40,7 +46,7 @@ class SearchDropdown extends PureComponent {
 
     onDropdownClick(e){
         const {show} = this.state;
-        this.setState({show:!show, searchText: ''});
+        this.setState({show:!show, searchText: '', addCountryStatus: ''});
     }
 
     onTextChange(e){
@@ -61,8 +67,11 @@ class SearchDropdown extends PureComponent {
 
     onAddCountry(){
         const {searchText} = this.state;
-        const { dispatch } = this.props;
-        dispatch(addCountryAction(searchText));
+        const { addCountry } = this.props;
+        addCountry(searchText)
+        .then(({status}) => {
+            this.setState({ addCountryStatus: status, show:false, selectedValue: searchText });
+        }).catch((err) => console.log('an error occurred', err));
     }
 
     componentDidMount(){
@@ -71,10 +80,15 @@ class SearchDropdown extends PureComponent {
     }
 
     render() {
-        const {show, filteredCountries, searchText, showMore, selectedValue } = this.state;
-        const {countries, addCountry, user} = this.props;
+        const {show, 
+            filteredCountries, 
+            searchText, 
+            showMore, 
+            selectedValue, 
+            addCountryStatus  } = this.state;
+        const {countries, user} = this.props;
         const displayedCountries = (searchText !== '' ? filteredCountries: countries)
-
+        
         return (
             <>
             <span>Items inside dropdown are case Sensitive</span>
@@ -115,8 +129,8 @@ class SearchDropdown extends PureComponent {
                 </Dropdown.Menu>
             </Dropdown>
 
-            {addCountry.status &&
-            <div>{(addCountry.status==='Fail')? 
+            {addCountryStatus !=='' &&
+            <div>{(addCountryStatus==='Fail')? 
             'You are adding duplicates'
             : 'adding a country is success'}</div>}
 
@@ -125,5 +139,13 @@ class SearchDropdown extends PureComponent {
     }
 }
 const mapStateToProps = countries => countries;
+const mapDispatchToProps = (dispatch) => ({
+    addCountry: (country) => {
+      return new Promise((resolve, reject) => {
+        dispatch(addCountryAction( country, resolve, reject ));
+      });
+    },
+    dispatch
+  });
 
-export default connect(mapStateToProps)(SearchDropdown);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchDropdown);
