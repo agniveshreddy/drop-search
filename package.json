@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev:watch": "webpack-dev-server --watch",
+    "start": "webpack-dev-server --watch",
     "test": "jest",
     "webpack": "webpack"
   },
